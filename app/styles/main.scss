@@ -1,4 +1,4 @@
-    $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+$icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 
@@ -34,6 +34,12 @@ body {
     margin-bottom: 0;
     line-height: 40px;
     padding-bottom: 19px;
+
+    a,
+    a:hover {
+        text-decoration: none;
+        color: inherit;
+    }
 }
 
 /* Custom page footer */
@@ -74,6 +80,10 @@ body {
 
 .dropdown {
     cursor: pointer;
+
+    >div {
+        padding: 0;
+    }
 }
 
 .diffs,
