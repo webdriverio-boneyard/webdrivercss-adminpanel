@@ -13,8 +13,8 @@ module.exports = function(app) {
     app.route('/api/repositories/:file').get(api.downloadRepository);
     app.route('/api/repositories/:project/:file').get(api.getImage);
     app.route('/api/repositories/:project/diff/:diff').get(api.getImage);
-    app.post('/api/repositories/confirm').get(api.acceptDiff);
-    app.post('/api/repositories/*').get(api.syncImages);
+    app.route('/api/repositories/confirm').post(api.acceptDiff);
+    app.route('/api/repositories/*').post(api.syncImages);
 
     // All undefined api routes should return a 404
     app.route('/api/*').get(function(req, res) {
