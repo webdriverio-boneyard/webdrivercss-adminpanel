@@ -1,0 +1,7 @@
+<img ng-src="/api/repositories/{{ project }}/diff/{{ diffImg }}" alt="image diff" ng-class="{hidden: toggleDiff==0}">
+
+<div class="toggleDiff">
+    <input type="checkbox" id="{{ diffImg }}" ng-model="toggleDiff">
+    <label for="{{ diffImg }}">toggle image diff</label>
+    <button type="button" class="btn-xs btn-success" style="float:right;" ng-click="confirmChange()">✔ Confirm Change</button>
+</div>

@@ -1,4 +1,4 @@
-$icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+    $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 
@@ -65,6 +65,50 @@ body {
 
 .marketing p + h4 {
     margin-top: 28px;
+}
+
+.panel-body img,
+.panel-body canvas {
+    max-width: 100%;
+}
+
+.dropdown {
+    cursor: pointer;
+}
+
+.diffs,
+.shots {
+    .panel-title {
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: normal;
+    }
+
+    label {
+        cursor: pointer;
+    }
+}
+.diffs {
+    .panel-heading {
+        background-color: #d9534f;
+    }
+
+    img {
+        position: absolute;
+    }
+}
+.shots {
+    .panel-heading {
+        background-color: #5cb85c;
+    }
+
+    img {
+        max-width: 100%;
+    }
+}
+
+.header img {
+    height: 45px;
 }
 
 /* Responsive: Portrait tablets and up */
