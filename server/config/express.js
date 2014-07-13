@@ -5,6 +5,7 @@ var express = require('express'),
     morgan = require('morgan'),
     compression = require('compression'),
     bodyParser = require('body-parser'),
+    multipart = require('connect-multiparty'),
     methodOverride = require('method-override'),
     errorHandler = require('errorhandler'),
     path = require('path'),
@@ -45,6 +46,7 @@ module.exports = function(app) {
     app.set('view engine', 'html');
     app.use(morgan('dev'));
     app.use(bodyParser());
+    app.use(multipart());
     app.use(methodOverride());
 
     // Error handler - has to be last
