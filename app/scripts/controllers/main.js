@@ -8,6 +8,7 @@ angular.module('webdrivercssAdminpanelApp').controller('MainCtrl', function ($sc
 
     $scope.diffs = [];
     $scope.shots = [];
+    $scope.api = document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/api/repositories/';
 
     if($routeParams.id) {
         $scope.dir   = $routeParams.id;

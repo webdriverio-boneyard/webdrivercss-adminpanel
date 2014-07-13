@@ -17,6 +17,13 @@
             </ul>
         </div>
     </div>
+
+    <a class="navbar-toggle dropdown-toggle collapsed" data-toggle="dropdown" data-target=".navbar-nav .dropdown">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </a>
 </nav>
 
 <div class="panel panel-default diffs" ng-repeat="diff in diffs">
@@ -32,3 +39,57 @@
         <img ng-src="/api/repositories/{{ dir }}/{{ shot }}" alt="{{ shot.split('.')[0] }}">
     </div>
 </div>
+
+<div class="introduction" ng-show="shots.length === 0 && diffs.length === 0">
+    <h2>Howdy,</h2>
+
+    <p>
+        and congratulation! You've successfully set up the WebdriverCSS Adminpanel. Now you can start with
+        your CSS regression tests. This Application will help you to get an overview of all made screenshots
+        of your project.
+    </p>
+
+    <p>
+        To get started just the type your project name into the input field and copy the source code below
+        into a test file and execute it.
+    </p>
+
+    <label for="projectname" style="margin-top: 20px;">Your Project Name</label>
+    <input type="text" id="projectname" class="form-control" ng-model="projectname">
+
+    <label for="projecturl" style="margin-top: 10px;">Your Project URL</label>
+    <input type="text" id="projecturl" class="form-control" ng-model="projecturl">
+
+    <div hljs language="javascript" include="'compile-me'" compile="true" style="margin: 30px 0;"></div>
+
+<script type="text/ng-template" id="compile-me">
+var WebdriverIO = require('webdriverjs'),
+    WebdriverCSS = require('webdrivercss');
+
+var client = WebdriverIO.remote({
+    desiredCapabilities: {
+        browserName: 'firefox'
+    }
+});
+
+WebdriverCSS.init(client, {
+    screenshotRoot: '{{ projectname || "myProject" }}',
+    api: '{{ api }}'
+});
+
+client
+    .init()
+    .sync()
+    .url('{{ projecturl || "http://example.com" }}')
+    .webdrivercss('exampleTest')
+    .sync()
+    .end();
+</script>
+
+    <p>
+        For more information on how to install and use <a href="https://github.com/webdriverio/webdrivercss">WebdriverCSS</a>
+        and <a href="http://webdriver.io">WebdriverIO</a> please checkout their project website or GitHub repositories.
+    </p>
+</div>
+
+<hr>

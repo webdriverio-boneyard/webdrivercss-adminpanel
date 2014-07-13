@@ -121,6 +121,18 @@ body {
     height: 45px;
 }
 
+pre {
+    padding: 0;
+}
+
+footer {
+    text-align: center;
+}
+
+.navbar-toggle {
+    cursor: pointer;
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
     .container {
@@ -142,4 +154,42 @@ body {
     .jumbotron {
         border-bottom: 0;
     }
+}
+
+@media screen and (max-width: 768px) {
+    .header h3 {
+        padding-left: 50px;
+    }
+
+    .navbar-toggle {
+        position: absolute;
+        top: -67px;
+        left: 0;
+    }
+    .navbar-repository {
+        background: none;
+        border: 0;
+        min-height: 0px;
+    }
+    .dropdown > .navbar-collapse {
+        display: block;
+
+        .dropdown-toggle {
+            display: none;
+        }
+
+        >.navbar-nav {
+            margin: 0;
+        }
+
+        .dropdown-menu {
+            padding: 0;
+            border-bottom: 1px solid #cccccc;
+
+            li:hover {
+                background: #eeeeee;
+            }
+        }
+    }
+
 }

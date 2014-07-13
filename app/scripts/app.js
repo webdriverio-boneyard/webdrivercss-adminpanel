@@ -3,11 +3,12 @@
 angular.module('webdrivercssAdminpanelApp', [
     'ngResource',
     'ngSanitize',
-    'ngRoute'
+    'ngRoute',
+    'hljs'
 ])
 .constant('API_HOST','localhost')
 .constant('API_PORT',9000)
-.config(function($routeProvider, $locationProvider) {
+.config(function($routeProvider, $locationProvider, hljsServiceProvider) {
 
     $routeProvider.when('/', {
         templateUrl: 'partials/main',
@@ -22,4 +23,9 @@ angular.module('webdrivercssAdminpanelApp', [
     });
 
     $locationProvider.html5Mode(true);
+
+    hljsServiceProvider.setOptions({
+        // replace tab with 4 spaces
+        tabReplace: '    '
+    });
 });
