@@ -73,9 +73,12 @@ body {
     margin-top: 28px;
 }
 
-.panel-body img,
-.panel-body canvas {
-    max-width: 100%;
+imagediff {
+    position: relative;
+
+    img, canvas {
+        max-width: 100%;
+    }
 }
 
 .dropdown {

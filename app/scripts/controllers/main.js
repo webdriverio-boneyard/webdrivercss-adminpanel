@@ -10,7 +10,7 @@ angular.module('webdrivercssAdminpanelApp').controller('MainCtrl', function ($sc
     $scope.shots = [];
     $scope.api = document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/api/repositories/';
 
-    if($routeParams.id) {
+    if($routeParams.id && Object.keys(repositories).length) {
         $scope.dir   = $routeParams.id;
         $scope.diffs = repositories[$routeParams.id].diffs;
         $scope.shots = repositories[$routeParams.id].images;

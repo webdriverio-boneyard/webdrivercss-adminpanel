@@ -11,10 +11,11 @@ angular.module('webdrivercssAdminpanelApp').directive('imagediff', function($htt
         var self = this,
             canvas = document.createElement('canvas'),
             container = document.getElementById(id),
-            divide = 0.5;
+            divide = 0.32;
 
         this.ctx = canvas.getContext('2d');
         this.images = [];
+        this.resp = 1;
 
         var handler = function(ev) {
             if (ev.layerX || ev.layerX === 0) { // Firefox
@@ -86,6 +87,11 @@ angular.module('webdrivercssAdminpanelApp').directive('imagediff', function($htt
         var img = createImage(src, onload.bind(this));
     };
 
+    ImageDiff.prototype.setNewWidth = function(width) {
+        this.resp = this.width / width;
+        this.draw();
+    };
+
     ImageDiff.prototype.draw = function() {
         if (!this.ready) {
             return;
@@ -100,14 +106,14 @@ angular.module('webdrivercssAdminpanelApp').directive('imagediff', function($htt
     };
 
     ImageDiff.prototype.drawImages = function(ctx, before, after) {
-        var split = this.divide * this.width;
+        var split = this.divide * this.width * this.resp;
 
         ctx.drawImage(after, 0, 0);
         ctx.drawImage(before, 0, 0, split, this.height, 0, 0, split, this.height);
     };
 
     ImageDiff.prototype.drawHandle = function(ctx) {
-        var split = this.divide * this.width;
+        var split = this.divide * this.width * this.resp;
 
         ctx.fillStyle = 'rgb(220, 50, 50)';
         ctx.fillRect(split - 1, 0, 2, this.height);
@@ -167,6 +173,7 @@ angular.module('webdrivercssAdminpanelApp').directive('imagediff', function($htt
                     var imageDiffs = new ImageDiff($scope.diffID, this.width, this.height);
                     imageDiffs.add('/api/repositories/' + $scope.project + '/' + $scope.diffImg.replace('diff', 'current'));
                     imageDiffs.add('/api/repositories/' + $scope.project + '/' + $scope.diffImg.replace('diff', 'new'));
+                    imageDiffs.setNewWidth($(this).parent().width());
                     $(this).off('load');
                 });
 
