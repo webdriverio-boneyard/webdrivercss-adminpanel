@@ -123,12 +123,12 @@ exports.downloadRepository = function(req, res) {
 
     var file = req.params.file,
         project = file.replace(/\.tar\.gz/, ''),
-        tmpPath = '/tmp/selenium-monitoring-app/' + project,
+        tmpPath = path.join(__dirname, '..', '..', '.tmp', 'webdrivercss-adminpanel' , project),
         tarPath = tmpPath + '.tar.gz',
         projectPath = path.join(imageRepo, project);
 
     /**
-     * remove image diffs and new repo images
+     * create tmp directory and create tarball to download on the fly
      */
     async.waterfall([
         /**
@@ -148,12 +148,18 @@ exports.downloadRepository = function(req, res) {
             return glob(projectPath + '/**/*.current.png', done);
         },
         /**
-         * remove these files
+         * copy these files
          */
         function(files, done) {
             return async.map(files, function(file, cb) {
                 return fs.copy(file, file.replace(projectPath, tmpPath), cb);
             }, done);
+        },
+        /**
+         * create diff directory (webdrivercss breaks otherwise)
+         */
+        function(res, done) {
+            return fs.ensureDir(tmpPath + '/diff', done);
         },
         /**
          * zip cleared
@@ -168,6 +174,11 @@ exports.downloadRepository = function(req, res) {
         }
 
         res.sendfile(tarPath);
+
+        /**
+         * delete tmp directory
+         */
+        fs.remove(path.join(tmpPath, '..'));
 
     });
 
