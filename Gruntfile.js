@@ -341,7 +341,7 @@ module.exports = function(grunt) {
                     dot: true,
                     cwd: '<%= yeoman.app %>/views',
                     dest: '<%= yeoman.dist %>/views',
-                    src: '**/*.jade'
+                    src: '**/*.html'
                 }, {
                     expand: true,
                     cwd: '.tmp/images',
@@ -353,7 +353,8 @@ module.exports = function(grunt) {
                     src: [
                         'package.json',
                         'server.js',
-                        'server/**/*'
+                        'server/**/*',
+                        'repositories/**'
                     ]
                 }]
             },
