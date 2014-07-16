@@ -3,13 +3,13 @@
 WebdriverCSS Adminpanel
 =======================
 
-This application helps you to manage all your image repositories of your CSS regression tests made by [WebdriverCSS](https://github.com/webdriverio/webdrivercss).
+This application helps you to manage all your image repositories of your CSS regression tests made with [WebdriverCSS](https://github.com/webdriverio/webdrivercss).
 It provides an API to synchronise and configure them. This allows you to exchange the repositories with your peers and
 colleagues to be able to run regression tests decentralized.
 
 ## Install
 
-First download this repository
+First download this repository:
 
 ```sh
 $ git clone git@github.com:webdriverio/webdrivercss-adminpanel.git
@@ -23,7 +23,7 @@ $ npm install -g grunt-cli
 $ bower install
 ```
 
-Last but not least start the application by running
+Last but not least start the application by running:
 
 ```sh
 $ grunt serve:dist
@@ -31,7 +31,7 @@ $ grunt serve:dist
 
 This command minifies all stylesheets and scripts and starts the application on [localhost:9000](http://localhost:9000).
 I'm not going to describe how to deploy a Node.js application to a server. There are plenty of tutorials out there who
-describe how to do that.
+describe how to do that very well.
 
 ## Usage
 
