@@ -35,6 +35,9 @@ You will need the following installed on system:
 git clone https://github.com/webdriverio/webdrivercss-adminpanel.git
 cd webdrivercss-adminpanel
 
+# Install dependencies
+fig run npm install
+
 # Up
 fig up frontend
 ```

@@ -56,7 +56,9 @@
     "node": ">=0.10.0"
   },
   "scripts": {
+    "postinstall": "./node_modules/.bin/bower install",
     "start": "grunt serve:dist",
+    "fig": "grunt serve:fig",
     "dev": "grunt serve:debug",
     "test": "grunt test"
   }

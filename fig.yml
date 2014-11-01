@@ -1,8 +1,12 @@
 # This is the main entry point.
 #
 # Service is exposed on port 9000.
+#
+# Each time container is restarted, generated files are cleaned and recreated.
+#
+# fig up frontend
 frontend:
-    image: node:0.10
+    build: .
     environment:
         - PORT=9000
     ports:
@@ -13,7 +17,21 @@ frontend:
     volumes:
         - .:/usr/src/adminpanel
     working_dir: /usr/src/adminpanel
-    command: ./node_modules/.bin/grunt serve:fig
+    command: run fig
+    entrypoint: npm
+
+# Run npm commands from this container
+#
+# fig run npm install
+# fig run npm run dev
+npm:
+    build: .
+    volumes:
+        - .:/usr/src/adminpanel
+    working_dir: /usr/src/adminpanel
+    command: install
+    entrypoint: npm
+
 
 # Add a mongo database.
 db:

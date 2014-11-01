@@ -489,6 +489,7 @@ module.exports = function(grunt) {
         if (target === 'fig') {
             return grunt.task.run([
                 'clean:server',
+                'concurrent:server',
                 'concurrent:fig'
             ]);
         }
