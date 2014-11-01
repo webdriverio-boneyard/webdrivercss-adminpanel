@@ -1,15 +1,20 @@
+# This is the main entry point.
+#
+# Service is exposed on port 9000.
 frontend:
     image: node:0.10
     environment:
         - PORT=9000
     ports:
         - "9000:9000"
+        - "8080:8080"
     links:
         - db
     volumes:
         - .:/usr/src/adminpanel
     working_dir: /usr/src/adminpanel
-    command: node server.js
+    command: ./node_modules/.bin/grunt serve:fig
 
+# Add a mongo database.
 db:
     image: mongo:2.6
