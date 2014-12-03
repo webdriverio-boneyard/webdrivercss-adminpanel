@@ -91,8 +91,10 @@ TestGroup domain provides following actions:
 * findAll: retrieve a list of TestGroup, accept filters
 * findTests: retrieve a list of Test, accept filters
 * create: create a TestCase from metadata and Baselines
-* createTest: create a new Test object from Screenshot. In charge of retrieving
-  Baseline information
+* duplicate: duplicate former completed test group for a new build. All tests
+  have a NOT_STARTED status
+* attachScreenshot: create a new Test object from Screenshot if no existing test
+  matches, otherwise attach the screenshot to matching test
 * updateStatus: update test group status from associated Tests statuses
 * terminateSession: update NOT_STARTED Tests to MISSING
 
@@ -118,12 +120,17 @@ Build domain provides following actions:
 * find: retrieve a single Build, accept filters
 * findAll: retrieve a list of Builds, accept filters
 * create: duplicate Baselines images from
-* createTestGroup: creates a new TestGroup. Provides associated Baselines.
-* findTestGroupForScreenshot: retrieve or create TestGroups from
-* addScreenshot: Add a new screenshot to Build object from metadata. Creates a
-  new Test, associated with a TestGroup.
-* findBaselines: list updated baselines for next builds, grouped by TestGroup
+* duplicate: duplicate former build to create the new one.
 * terminateSession: terminate session for all TestGroups, this means no more
   tests will be run for this build
 
+## Workflow
+
+* findTestForScreenshot: retrieve or create Test from TestGroup and screenshot
+* findTestGroupForScreenshot: retrieve or create TestGroups from Build and
+  Screenshot
+* attachScreenshot: Add a new screenshot to Build object from metadata. Update
+  matching (or create new) new Tests and TestGroup.
+* startSession: create a new build from former build or from scracth.
+* terminateSession: terminate current build.
 
