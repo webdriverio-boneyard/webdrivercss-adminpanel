@@ -80,17 +80,21 @@ module.exports = function(grunt) {
                 options: {
                     livereload: true
                 }
-            },
-            express: {
-                files: [
-                    'server.js',
-                    'server/**/*.{js,json}'
-                ],
-                tasks: ['newer:jshint:server', 'express:dev', 'wait'],
-                options: {
-                    livereload: true,
-                    nospawn: true //Without this option specified express won't be reloaded
-                }
+//            },
+// Do not watch express code, use nodemon instead.
+// It breaks debugger.
+// https://github.com/ChrisWren/grunt-nodemon/issues/38#issuecomment-36413725
+//
+//            express: {
+//                files: [
+//                    'server.js',
+//                    'server/**/*.{js,json}'
+//                ],
+//                tasks: ['newer:jshint:server', 'express:dev', 'wait'],
+//                options: {
+//                    livereload: true,
+//                    nospawn: true //Without this option specified express won't be reloaded
+//                }
             }
         },
 
@@ -162,7 +166,7 @@ module.exports = function(grunt) {
         'node-inspector': {
             custom: {
                 options: {
-                    'web-host': 'localhost'
+                    'web-host': '0.0.0.0'
                 }
             }
         },
@@ -172,7 +176,7 @@ module.exports = function(grunt) {
             debug: {
                 script: 'server.js',
                 options: {
-                    nodeArgs: ['--debug-brk'],
+                    nodeArgs: ['--debug'],
                     env: {
                         PORT: process.env.PORT || 9000
                     },
@@ -184,7 +188,11 @@ module.exports = function(grunt) {
                         // opens browser on initial server start
                         nodemon.on('config:update', function() {
                             setTimeout(function() {
-                                require('open')('http://localhost:8080/debug?port=5858');
+                                try {
+                                    require('open')('http://localhost:8080/debug?port=5858');
+                                } catch (e) {
+                                    console.log('You can now access debug interface at http://localhost:8080/debug?port=5858');
+                                }
                             }, 500);
                         });
                     }
@@ -383,6 +391,15 @@ module.exports = function(grunt) {
                     logConcurrentOutput: true
                 }
             },
+            fig: {
+                tasks: [
+                    'concurrent:debug',
+                    'watch'
+                ],
+                options: {
+                    logConcurrentOutput: true
+                }
+            },
             dist: [
                 'compass:dist',
                 'imagemin',
@@ -466,6 +483,14 @@ module.exports = function(grunt) {
                 'concurrent:server',
                 'autoprefixer',
                 'concurrent:debug'
+            ]);
+        }
+
+        if (target === 'fig') {
+            return grunt.task.run([
+                'clean:server',
+                'concurrent:server',
+                'concurrent:fig'
             ]);
         }
 

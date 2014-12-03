@@ -1,0 +1,38 @@
+# This is the main entry point.
+#
+# Service is exposed on port 9000.
+#
+# Each time container is restarted, generated files are cleaned and recreated.
+#
+# fig up frontend
+frontend:
+    build: .
+    environment:
+        - PORT=9000
+    ports:
+        - "9000:9000"
+        - "8080:8080"
+    links:
+        - db
+    volumes:
+        - .:/usr/src/adminpanel
+    working_dir: /usr/src/adminpanel
+    command: run fig
+    entrypoint: npm
+
+# Run npm commands from this container
+#
+# fig run npm install
+# fig run npm run dev
+npm:
+    build: .
+    volumes:
+        - .:/usr/src/adminpanel
+    working_dir: /usr/src/adminpanel
+    command: install
+    entrypoint: npm
+
+
+# Add a mongo database.
+db:
+    image: mongo:2.6
