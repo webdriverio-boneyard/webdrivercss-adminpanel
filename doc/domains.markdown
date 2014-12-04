@@ -37,6 +37,8 @@ Test domain provides following actions:
 * find: retrieve a single Test, accept filters
 * findAll: retrieve a list of Test, accept filters
 * create: create a new Test from metadata, baseline and screenshot
+* duplicate: duplicate former completed test for a new TestGroup. Duplicated
+  test has a NOT_STARTED status
 * restartTest: retry comparison of images
 * attachScreenshot: attach a screenshot to a test. This starts diff comparison.
 * abortTest: abort a Test when timeout is reached. No timeout is applied for
@@ -93,8 +95,6 @@ TestGroup domain provides following actions:
 * create: create a TestCase from metadata and Baselines
 * duplicate: duplicate former completed test group for a new build. All tests
   have a NOT_STARTED status
-* attachScreenshot: create a new Test object from Screenshot if no existing test
-  matches, otherwise attach the screenshot to matching test
 * updateStatus: update test group status from associated Tests statuses
 * terminateSession: update NOT_STARTED Tests to MISSING
 
@@ -106,12 +106,13 @@ A TestGroup status is computed as follow:
 
 * if all Tests have the same status, this is the TestGroup status
 * if a Test is IN_PROGRESS or NOT_STARTED, the TestGroup status is IN_PROGRESS
-* if no Test is IN_PROGRESS and a Test NEEDS_ACTION or is MISSING, the TestGroup
-  status is NEEDS_ACTION
+* if no Test is IN_PROGRESS and a Test NEEDS_ACTION, the TestGroup status is
+  NEEDS_ACTION
 * if no test needs action or is in progress and one test is FAILED, the
   TestGroup status is FAILED
+* if no test needs action, is in progress or failed and one test is ABORTED, the
+  TestGroup status is ABORTED
 
-A TestGroup
 
 ## Build
 

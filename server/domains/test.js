@@ -15,6 +15,13 @@ function compare(test, cb) {
     cb(null);
 }
 
+// Save a test
+//
+// This is a placeholder method for further model inegration.
+function saveTest(test, cb) {
+    cb(null, test);
+}
+
 var Test = module.exports = {
 
     find: function (filter) {
@@ -26,6 +33,7 @@ var Test = module.exports = {
         }
 
         next(null, {
+                group_id: 'my_group',
                 file: 'data/screenshots/xyz.png',
                 date: new Date(),
                 title: 'A great screenshot'
@@ -42,6 +50,7 @@ var Test = module.exports = {
         }
 
         next(null, [{
+                group_id: 'my_group',
                 file: 'data/screenshots/xyz.png',
                 date: new Date(),
                 title: 'A great screenshot'
@@ -72,8 +81,47 @@ var Test = module.exports = {
         test.baseline = metadata.baseline;
         test.screenshot = metadata.screenshot;
 
-        next(null, test);
+        testGroup.tests.push(test.id);
 
+        next(null, test, testGroup);
+
+    },
+
+    // duplicate: duplicate former completed test for a new TestGroup. Duplicated
+    // test has a NOT_STARTED status
+    duplicate: function (test, currentGroup) {
+
+        var next = arguments[arguments.length - 1];
+
+        if (arguments.length < 3) {
+            return next(new vError('Test.duplicate takes 2 parameters, the former test object and the Group'));
+        }
+
+        var metadata = {
+            title: test.title,
+            baseline: test.resultBaseline
+        };
+
+        async.waterfall([
+
+                Test.create.bind(null, currentGroup, metadata),
+
+                function updateTestData(newTest, cb) {
+
+                    newTest.status = Statuses.NOT_STARTED;
+
+                    cb(null, newTest);
+                },
+
+                saveTest
+
+            ], function (err, test) {
+
+                if (err) { return next(new vError('Test.duplicate', err)); }
+
+                next(null, test);
+
+            });
     },
 
     // Set Screenshot for a Test
@@ -162,7 +210,7 @@ var Test = module.exports = {
         test.diffImage = diffImage;
 
         if (diffData.isWithinMisMatchTolerance) {
-          return Test.markTestAsPassed(test, next);
+            return Test.markTestAsPassed(test, next);
         }
 
         Test.markTestAsUnknown(Test, next);
