@@ -63,7 +63,7 @@ var Build = module.exports = {
             },
             function (err, groupList) {
 
-                if (err) { return next(new vError('Build.fetchGroup', err)); }
+                if (err) { return next(new vError(err, 'Build.fetchGroup')); }
 
                 next(null, groupList);
 
@@ -115,7 +115,7 @@ var Build = module.exports = {
                         formerBuild,
                         function doneFinedFormerGroups(err, formerGroupList) {
 
-                            if (err) { return cb(new vError('findFormerGroups', err)); }
+                            if (err) { return cb(new vError(err, 'findFormerGroups')); }
 
                             cb(null, formerGroupList, newBuild);
 
@@ -131,7 +131,7 @@ var Build = module.exports = {
 
                         }, function doneReplicateGroups(err) {
 
-                            if (err) { return cb(new vError('replicateGroup', err)); }
+                            if (err) { return cb(new vError(err, 'replicateGroup')); }
 
                             cb(null, newBuild);
 
@@ -141,7 +141,7 @@ var Build = module.exports = {
 
             ], function (err, build) {
 
-                if (err) { return next(new vError('Build.duplicate', err)); }
+                if (err) { return next(new vError(err, 'Build.duplicate')); }
 
                 next(null, build);
 
@@ -227,7 +227,7 @@ var Build = module.exports = {
 
             ], function (err, build) {
 
-                if (err) { return next(new vError('Build.updateStatus', err)); }
+                if (err) { return next(new vError(err, 'Build.updateStatus')); }
 
                 next(null, build);
 
@@ -256,7 +256,7 @@ var Build = module.exports = {
                         group.terminateSession,
                         function (err) {
 
-                            if (err) { return cb(new vError('terminateGroups', err)); }
+                            if (err) { return cb(new vError(err, 'terminateGroups')); }
 
                             cb(null, build);
 
@@ -268,7 +268,7 @@ var Build = module.exports = {
 
             ], function (err, build) {
 
-                if (err) { return next(new vError('Build.terminateSession', err)); }
+                if (err) { return next(new vError(err, 'Build.terminateSession')); }
 
                 next(null, build);
 
