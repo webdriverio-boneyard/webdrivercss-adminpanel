@@ -1,14 +1,7 @@
 var vError      = require('verror');
 var async       = require('async');
 
-var Statuses = {
-    NOT_STARTED: 0,
-    IN_PROGRESS: 1,
-    ABORTED: 2,
-    PASSED: 3,
-    FAILED: 4,
-    NEEDS_ACTION: 5
-};
+var Statuses    = require('./statuses');
 
 // launch a comparison for a given test
 function compare(test, cb) {
