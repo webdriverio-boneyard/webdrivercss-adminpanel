@@ -30,7 +30,7 @@ var TestGroup = module.exports = {
         }
 
         next(null, {
-                title: 'A great screenshot',
+                title: 'A great Test Group',
                 status: Statuses.NOT_STARTED
             });
 
@@ -45,7 +45,7 @@ var TestGroup = module.exports = {
         }
 
         next(null, [{
-                title: 'A great screenshot',
+                title: 'A great Test Group',
                 status: Statuses.NOT_STARTED
             }]);
 
