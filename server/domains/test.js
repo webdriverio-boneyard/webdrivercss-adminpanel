@@ -51,16 +51,12 @@ var Test = module.exports = {
 
     },
 
-    create: function (testGroup, metadata) {
+    create: function (metadata) {
 
         var next = arguments[arguments.length - 1];
 
-        if (arguments.length === 2) {
+        if (arguments.length === 1) {
             metadata = {};
-        }
-
-        if (arguments.length < 2) {
-            return next(new vError('Test.create takes 2 parameters, the testGroup and the test metadata'));
         }
 
         var test = {};
@@ -74,9 +70,7 @@ var Test = module.exports = {
         test.baseline = metadata.baseline;
         test.screenshot = metadata.screenshot;
 
-        testGroup.tests.push(test.id);
-
-        next(null, test, testGroup);
+        next(null, test);
 
     },
 
@@ -97,11 +91,12 @@ var Test = module.exports = {
 
         async.waterfall([
 
-                Test.create.bind(null, currentGroup, metadata),
+                Test.create.bind(null, metadata),
 
                 function updateTestData(newTest, cb) {
 
                     newTest.status = Statuses.NOT_STARTED;
+                    newTest.group_id = currentGroup.id;
 
                     cb(null, newTest);
                 },
