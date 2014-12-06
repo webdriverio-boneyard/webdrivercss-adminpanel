@@ -61,7 +61,7 @@ var TestGroup = module.exports = {
             },
             function (err, testList) {
 
-                if (err) { return next(new vError('TestGroup.fetchTest', err)); }
+                if (err) { return next(new vError(err, 'TestGroup.fetchTest')); }
 
                 next(null, testList);
 
@@ -115,7 +115,7 @@ var TestGroup = module.exports = {
                         formerGroup,
                         function doneFinedFormerTests(err, formerTestList) {
 
-                            if (err) { return cb(new vError('findFormerTests', err)); }
+                            if (err) { return cb(new vError(err, 'findFormerTests')); }
 
                             cb(null, formerTestList, newGroup);
 
@@ -131,7 +131,7 @@ var TestGroup = module.exports = {
 
                         }, function doneReplicateTests(err) {
 
-                            if (err) { return cb(new vError('replicateTest', err)); }
+                            if (err) { return cb(new vError(err, 'replicateTest')); }
 
                             cb(null, newGroup);
 
@@ -141,7 +141,7 @@ var TestGroup = module.exports = {
 
             ], function (err, group) {
 
-                if (err) { return next(new vError('TestGroup.duplicate', err)); }
+                if (err) { return next(new vError(err, 'TestGroup.duplicate')); }
 
                 next(null, group);
 
@@ -227,7 +227,7 @@ var TestGroup = module.exports = {
 
             ], function (err, group) {
 
-                if (err) { return next(new vError('TestGroup.updateStatus', err)); }
+                if (err) { return next(new vError(err, 'TestGroup.updateStatus')); }
 
                 next(null, group);
 
@@ -256,7 +256,7 @@ var TestGroup = module.exports = {
                         test.terminateSession,
                         function (err) {
 
-                            if (err) { return cb(new vError('terminateTests', err)); }
+                            if (err) { return cb(new vError(err, 'terminateTests')); }
 
                             cb(null, group);
 
@@ -268,7 +268,7 @@ var TestGroup = module.exports = {
 
             ], function (err, group) {
 
-                if (err) { return next(new vError('TestGroup.terminateSession', err)); }
+                if (err) { return next(new vError(err, 'TestGroup.terminateSession')); }
 
                 next(null, group);
 
