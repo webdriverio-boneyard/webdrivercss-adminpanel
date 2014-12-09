@@ -16,6 +16,7 @@ module.exports = Workflow = {
         // find or create associated group
         // find or create associated test
 
+        // create screenshot metadata
         // attach screenshot to test
 
         // return test object
