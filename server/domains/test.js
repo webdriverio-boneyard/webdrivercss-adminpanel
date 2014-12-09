@@ -1,10 +1,12 @@
 var vError      = require('verror');
 var async       = require('async');
+var screenshot  = require('./screenshot');
 
 var Statuses    = require('./statuses');
 
 // launch a comparison for a given test
 function compare(test, cb) {
+    test.status = Statuses.IN_PROGRESS;
     cb(null);
 }
 
@@ -105,7 +107,7 @@ var Test = module.exports = {
 
             ], function (err, test) {
 
-                if (err) { return next(new vError('Test.duplicate', err)); }
+                if (err) { return next(new vError(err, 'Test.duplicate')); }
 
                 next(null, test);
 
@@ -114,8 +116,16 @@ var Test = module.exports = {
 
     // Set Screenshot for a Test
     //
-    // As a test can be create before screenshots are sent, it is a way to
-    attachScreenshot: function (test, screenshot) {
+    // Metadata is the screenshot information containing `screenshotBase64`,
+    // `isWithinMisMatchTolerance`, `misMatchPercentage`, `isExactSameImage`,
+    // `isSameDimensions`, `diffBase64`, `baselineBase64`
+    //
+    // As a test can be created before screenshots are sent, it is a way to
+    // update a test with a screenshot.
+    //
+    // If diffData is provided, then test is updated with diff information,
+    // otherwise a comparison is triggered
+    attachScreenshot: function (test, metadata) {
 
         var next = arguments[arguments.length - 1];
 
@@ -123,11 +133,76 @@ var Test = module.exports = {
             return next(new vError('Test.updateScreenshot takes 2 parameters, the test to update and the screenshot object'));
         }
 
-        test.screenshot = screenshot;
+        async.waterfall([
 
-        compare(test, function comparisonStarted(err) {
-            next(err, test);
-        });
+                screenshot.create.bind(null, metadata.screenshotBase64),
+
+                function updateScreenshotField(screenshotObject, cb) {
+
+                    test.screenshot = screenshotObject.path;
+
+                    cb(null, test);
+
+                },
+
+                function saveDiffImage(test, cb) {
+                    // If a diff image
+                    if (metadata.diffImage) {
+                        test.diffImage = screenshotObject.path;
+                        metadata.diffBase64 = null;
+                        metadata.diffImage = screenshotObject.path;
+                    }
+                    // if no diff content has been provided
+                    // then continue
+                    if (!metadata.diffBase64) {
+                        return cb(null, test);
+                    }
+
+                    screenshot.create(metadata.diffBase64, function (err, screenshotObject) {
+                        if (err) { return cb(new vError(err, 'saveDiffImage')); }
+
+                        test.diffImage = screenshotObject.path;
+                        metadata.diffBase64 = null;
+                        metadata.diffImage = screenshotObject.path;
+
+                        cb(null, test);
+                    });
+
+                },
+
+                function computeDiffData(test, cb) {
+                    // if no diff information has been provided
+                    // then start comparison
+                    if (!metadata.misMatchPercentage) {
+                        return compare(test, function comparisonStarted(err) {
+                            if (err) { return cb(new vError(err, 'computeDiffData')); }
+                            cb(err, test);
+                        });
+                    }
+
+                    // diff informations are given, let's save them
+                    Test.attachDiffData(
+                        test, {
+                            isWithinMisMatchTolerance: metadata.isWithinMisMatchTolerance,
+                            misMatchPercentage: metadata.misMatchPercentage,
+                            isExactSameImage: metadata.isExactSameImage,
+                            isSameDimensions: metadata.isSameDimensions,
+                            diffImage: metadata.diffImage
+                        },
+                        function diffAttached(err, test) {
+                            if (err) { return cb(new vError(err, 'computeDiffData')); }
+                            cb(err, test);
+                        });
+                }
+
+            ], function (err, test) {
+
+                if (err) { return next(new vError(err, 'Test.attachScreenshot')); }
+
+                next(err, test);
+
+            });
+
 
     },
 

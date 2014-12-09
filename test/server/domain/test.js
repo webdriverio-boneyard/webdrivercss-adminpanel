@@ -8,9 +8,9 @@ describe('test', function() {
         it('should create a new test from no metadata', function (done) {
             test.create(function (err, newTest) {
 
-                if (err) { done(err); }
+                if (err) { return done(err); }
 
-                if (!newTest) { done(new Error('should return a test object')); }
+                if (!newTest) { return done(new Error('should return a test object')); }
 
                 done();
 
@@ -20,9 +20,9 @@ describe('test', function() {
         it('should create a new test from metadata', function (done) {
             test.create({}, function (err, newTest) {
 
-                if (err) { done(err); }
+                if (err) { return done(err); }
 
-                if (!newTest) { done(new Error('should return a test object')); }
+                if (!newTest) { return done(new Error('should return a test object')); }
 
                 done();
 
@@ -51,10 +51,10 @@ describe('test', function() {
         it('should create a new test object for group', function (done) {
             test.duplicate(originalTest, group, function (err, newTest) {
 
-                if (err) { done(err); }
+                if (err) { return done(err); }
 
                 if (!newTest) {
-                    done(new Error('should return a test object'));
+                    return done(new Error('should return a test object'));
                 }
 
                 done();
@@ -65,16 +65,16 @@ describe('test', function() {
         it('should set new test properties', function (done) {
             test.duplicate(originalTest, group, function (err, newTest) {
 
-                if (err) { done(err); }
+                if (err) { return done(err); }
 
                 if (!newTest.group_id) {
-                    done(new Error('should have group_id set'));
+                    return done(new Error('should have group_id set'));
                 }
                 if (newTest.group_id !== group.id) {
-                    done(new Error('should have group_id set to group id'));
+                    return done(new Error('should have group_id set to group id'));
                 }
                 if (newTest.status !== Statuses.NOT_STARTED) {
-                    done(new Error('should have status set to NOT_STARTED'));
+                    return done(new Error('should have status set to NOT_STARTED'));
                 }
 
                 done();
@@ -88,13 +88,13 @@ describe('test', function() {
 
             test.duplicate(originalTest, group, function (err, newTest) {
 
-                if (err) { done(err); }
+                if (err) { return done(err); }
 
                 if (!newTest.baseline) {
-                    done(new Error('should have a baseline set'));
+                    return done(new Error('should have a baseline set'));
                 }
                 if (newTest.baseline !== 'new') {
-                    done(new Error('should have original resultBaseline as baseline'));
+                    return done(new Error('should have original resultBaseline as baseline'));
                 }
 
                 done();
@@ -108,10 +108,10 @@ describe('test', function() {
 
             test.duplicate(originalTest, group, function (err, newTest) {
 
-                if (err) { done(err); }
+                if (err) { return done(err); }
 
                 if (newTest.resultBaseline) {
-                    done(new Error('should not have a resultBaseline'));
+                    return done(new Error('should not have a resultBaseline'));
                 }
 
                 done();
@@ -120,29 +120,53 @@ describe('test', function() {
         });
     });
 
-    describe.skip('#attachScreenshot()', function() {
+    describe('#attachScreenshot()', function() {
+        var testObject, screenshotData;
+
+        beforeEach(function (done) {
+            screenshotData = {
+                screenshotBase64: 'XYZ'
+            };
+
+            test.create({}, function (err, createdTest) {
+                if (err) { return done(err); }
+
+                testObject = createdTest;
+
+                done();
+            });
+        });
+
 
         it('should update screenshot field', function (done) {
+            test.attachScreenshot(testObject, screenshotData, function (err, updatedTest) {
+                if (err) { return done(err); }
+
+                if (updatedTest.screenshot !== screenshotData.screenshotPath) {
+                    return done(new Error('should update screenshot field with given screenshot'));
+                }
+
+                done();
+            });
+        });
+
+        it.skip('should updateStatus to PASSED if isWithinMisMatchTolerance is true', function (done) {
             done(new Error('Not implemented yet'));
         });
 
-        it('should updateStatus to PASSED if isWithinMismatchTolerance is true', function (done) {
+        it.skip('should updateStatus to NEEDS_ACTION if isWithinMisMatchTolerance is false', function (done) {
             done(new Error('Not implemented yet'));
         });
 
-        it('should updateStatus to NEEDS_ACTION if isWithinMismatchTolerance is false', function (done) {
+        it.skip('should update diff information if provided', function (done) {
             done(new Error('Not implemented yet'));
         });
 
-        it('should update diff information if provided', function (done) {
+        it.skip('should set test status to IN_PROGRESS if no diff data is provided', function (done) {
             done(new Error('Not implemented yet'));
         });
 
-        it('should set test status to IN_PROGRESS if no diff data is provided', function (done) {
-            done(new Error('Not implemented yet'));
-        });
-
-        it('should trigger comparison if no diff is provided', function (done) {
+        it.skip('should trigger comparison if no diff is provided', function (done) {
             done(new Error('Not implemented yet'));
         });
 
