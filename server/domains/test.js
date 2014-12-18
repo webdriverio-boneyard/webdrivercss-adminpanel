@@ -145,35 +145,10 @@ var Test = module.exports = {
 
                 },
 
-                function saveDiffImage(test, cb) {
-                    // If a diff image
-                    if (metadata.diffImage) {
-                        test.diffImage = screenshotObject.path;
-                        metadata.diffBase64 = null;
-                        metadata.diffImage = screenshotObject.path;
-                    }
-                    // if no diff content has been provided
-                    // then continue
-                    if (!metadata.diffBase64) {
-                        return cb(null, test);
-                    }
-
-                    screenshot.create(metadata.diffBase64, function (err, screenshotObject) {
-                        if (err) { return cb(new vError(err, 'saveDiffImage')); }
-
-                        test.diffImage = screenshotObject.path;
-                        metadata.diffBase64 = null;
-                        metadata.diffImage = screenshotObject.path;
-
-                        cb(null, test);
-                    });
-
-                },
-
                 function computeDiffData(test, cb) {
                     // if no diff information has been provided
                     // then start comparison
-                    if (!metadata.misMatchPercentage) {
+                    if (metadata.misMatchPercentage == null) {
                         return compare(test, function comparisonStarted(err) {
                             if (err) { return cb(new vError(err, 'computeDiffData')); }
                             cb(err, test);
@@ -187,6 +162,7 @@ var Test = module.exports = {
                             misMatchPercentage: metadata.misMatchPercentage,
                             isExactSameImage: metadata.isExactSameImage,
                             isSameDimensions: metadata.isSameDimensions,
+                            diffBase64: metadata.diffBase64,
                             diffImage: metadata.diffImage
                         },
                         function diffAttached(err, test) {
@@ -261,7 +237,19 @@ var Test = module.exports = {
 
     },
 
-    attachDiffData: function (test, diffImage, diffData) {
+    // Attach diff data.
+    //
+    // Accept following metadata:
+    //
+    // * `isWithinMisMatchTolerance`
+    // * `misMatchPercentage`
+    // * `isExactSameImage`
+    // * `isSameDimensions`
+    // * `diffImage`: the reference to screenshot object
+    // * `diffBase64`: the base64 diff image
+    //
+    // > Note that one and only one of `diffImage` and `diffBase64` is required
+    attachDiffData: function (test, metadata) {
 
         var next = arguments[arguments.length - 1];
 
@@ -269,14 +257,57 @@ var Test = module.exports = {
             return next(new vError('Test.attachDiffData takes 2 parameters, the test to update and the diff result'));
         }
 
-        test.diffData = diffData;
-        test.diffImage = diffImage;
+        async.waterfall([
+                function initData(cb) {
+                    cb(null, test);
+                },
 
-        if (diffData.isWithinMisMatchTolerance) {
-            return Test.markTestAsPassed(test, next);
-        }
+                function saveDiffImage(test, cb) {
+                    // If a diff image
+                    if (metadata.diffImage) {
+                        test.diffImage = metadata.path;
+                        metadata.diffBase64 = null;
+                        metadata.diffImage = metadata.path;
+                    }
+                    // if no diff content has been provided
+                    // then continue
+                    if (!metadata.diffBase64) {
+                        return cb(null, test);
+                    }
 
-        Test.markTestAsUnknown(Test, next);
+                    screenshot.create(metadata.diffBase64, function (err, screenshotObject) {
+                        if (err) { return cb(new vError(err, 'saveDiffImage')); }
+
+                        test.diffImage = screenshotObject.path;
+
+                        cb(null, test);
+                    });
+
+                },
+
+                function attachInformation (test, cb) {
+
+                    test.isWithinMisMatchTolerance = metadata.isWithinMisMatchTolerance;
+                    test.misMatchPercentage = metadata.misMatchPercentage;
+                    test.isExactSameImage = metadata.isExactSameImage;
+                    test.isSameDimensions = metadata.isSameDimensions;
+
+                    cb(null, test);
+                },
+
+                function updateStatus (test, cb) {
+                    if (metadata.isWithinMisMatchTolerance) {
+                        return Test.markTestAsPassed(test, cb);
+                    }
+
+                    Test.markTestAsUnknown(test, cb);
+                }
+
+            ], function (err, test) {
+                if (err) { return next(new vError(err, 'Test.attachDiffData')); }
+
+                next(null, test);
+            });
 
     },
 
@@ -290,9 +321,9 @@ var Test = module.exports = {
 
         async.waterfall([
 
-                updateResultBaseline,
+                updateResultBaseline.bind(null, test),
 
-                function updateStatus(done) {
+                function updateStatus(test, done) {
                     test.status = Statuses.PASSED;
                     done(null);
                 }
@@ -313,9 +344,9 @@ var Test = module.exports = {
 
         async.waterfall([
 
-                keepResultBaseline,
+                keepResultBaseline.bind(null, test),
 
-                function updateStatus(done) {
+                function updateStatus(test, done) {
                     test.status = Statuses.NEEDS_ACTION;
                     done(null);
                 }
@@ -336,9 +367,9 @@ var Test = module.exports = {
 
         async.waterfall([
 
-                keepResultBaseline,
+                keepResultBaseline.bind(null, test),
 
-                function updateStatus(done) {
+                function updateStatus(test, done) {
                     test.status = Statuses.FAILED;
                     done(null);
                 }
