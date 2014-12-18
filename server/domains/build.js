@@ -1,7 +1,7 @@
 var vError      = require('verror');
 var async       = require('async');
 var _           = require('lodash');
-var group       = require('./group');
+var group       = require('./testGroup');
 
 var Statuses    = require('./statuses');
 
