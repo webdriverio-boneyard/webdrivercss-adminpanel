@@ -74,6 +74,17 @@ describe('test', function() {
                 if (newTest.group_id !== group.id) {
                     return done(new Error('should have group_id set to group id'));
                 }
+
+                done();
+
+            });
+        });
+
+        it('should set new test status to NOT_STARTED', function (done) {
+            test.duplicate(originalTest, group, function (err, newTest) {
+
+                if (err) { return done(err); }
+
                 if (newTest.status !== Statuses.NOT_STARTED) {
                     return done(new Error('should have status set to NOT_STARTED'));
                 }
@@ -183,7 +194,7 @@ describe('test', function() {
                 if (err) { return done(err); }
 
                 if (updatedTest.status !== Statuses.PASSED) {
-                    return done(new Error('should set status to PASSED when isWithinMisMatchTolerance (received '+updatedTest.status+')'));
+                    return done(new Error('should set status to PASSED when isWithinMisMatchTolerance (received '+Statuses.fromNumberToId(updatedTest.status)+')'));
                 }
 
                 done();
