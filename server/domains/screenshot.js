@@ -1,5 +1,7 @@
 var vError      = require('verror');
 var fs          = require('fs-extra');
+var async       = require('async');
+var path        = require('path');
 
 module.exports = {
 
@@ -47,14 +49,41 @@ module.exports = {
             return next(new vError('You must provide a base64 image to Screenshot.create'));
         }
 
-        fs.writeFile('data/screenshots/xyz.png', base64, {enc: 'utf8'}, function (err) {
-            if (err) { return next(err); }
-            next(null, {
-                file: 'data/screenshots/xyz.png',
-                date: new Date(),
-                title: 'A great screenshot'
+        var dataDir = path.join('data', 'screenshots');
+
+        async.waterfall([
+
+                function ensureDirExists(cb) {
+                    fs.mkdirs(dataDir, function (err) {
+                        cb(err);
+                    });
+                },
+
+                function generateUniqueId(cb) {
+                    cb(null, 'xyz');
+                },
+
+                function saveFile(uuid, cb) {
+                    var filename = path.join(dataDir, uuid + '.png');
+
+                    fs.writeFile(filename, base64, {enc: 'utf8'}, function (err) {
+                        if (err) { return cb(err); }
+                        cb(null, {
+                            file: filename,
+                            date: new Date(),
+                            title: metadata.title || 'no title'
+                        });
+                    });
+
+                }
+
+            ], function (err, screenshot) {
+
+                if (err) { return next(new vError(err, 'Screenshot.create')); }
+
+                next(null, screenshot);
+
             });
-        });
 
     }
 };
