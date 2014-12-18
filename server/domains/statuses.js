@@ -6,3 +6,14 @@ module.exports = {
     FAILED: 4,
     NEEDS_ACTION: 5
 };
+
+module.exports.fromNumberToId = function (nb) {
+    var i;
+    for (i in module.exports) {
+        if (module.exports[i] === nb) {
+            return i;
+        }
+    }
+
+    return 'Unknown status ' + nb;
+};
