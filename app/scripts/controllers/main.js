@@ -17,8 +17,8 @@ angular.module('webdrivercssAdminpanelApp').controller('MainCtrl', function ($sc
     }
 
     angular.forEach($scope.diffs, function(diff) {
-        $scope.shots.splice($scope.shots.indexOf(diff.replace(/diff/,'new')),1);
-        $scope.shots.splice($scope.shots.indexOf(diff.replace(/diff/,'current')),1);
+        $scope.shots.splice($scope.shots.indexOf(diff.replace(/diff/,'regression')),1);
+        $scope.shots.splice($scope.shots.indexOf(diff.replace(/diff/,'baseline')),1);
     });
 
 });

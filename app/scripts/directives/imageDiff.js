@@ -171,8 +171,8 @@ angular.module('webdrivercssAdminpanelApp').directive('imagediff', function($htt
 
                 element.find('img').load(function() {
                     var imageDiffs = new ImageDiff($scope.diffID, this.width, this.height);
-                    imageDiffs.add('/api/repositories/' + $scope.project + '/' + $scope.diffImg.replace('diff', 'current'));
-                    imageDiffs.add('/api/repositories/' + $scope.project + '/' + $scope.diffImg.replace('diff', 'new'));
+                    imageDiffs.add('/api/repositories/' + $scope.project + '/' + $scope.diffImg.replace('diff', 'baseline'));
+                    imageDiffs.add('/api/repositories/' + $scope.project + '/' + $scope.diffImg.replace('diff', 'regression'));
                     imageDiffs.setNewWidth($(this).parent().width());
                     $(this).off('load');
                 });
@@ -190,7 +190,7 @@ angular.module('webdrivercssAdminpanelApp').directive('imagediff', function($htt
                     }
                 }).success(function() {
                     element.parents('.panel:eq(0)').toggleClass('shots').toggleClass('diffs');
-                    element.find('img').attr('src', '/api/repositories/' + $scope.project + '/' + $scope.diffImg.replace('diff', 'current'));
+                    element.find('img').attr('src', '/api/repositories/' + $scope.project + '/' + $scope.diffImg.replace('diff', 'baseline'));
                     element.find('canvas, .toggleDiff').remove();
                     $scope.toggleDiff = 1;
                 });
