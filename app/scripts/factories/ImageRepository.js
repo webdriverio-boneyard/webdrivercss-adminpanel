@@ -4,7 +4,7 @@ angular.module('webdrivercssAdminpanelApp').factory('ImageRepository', function(
 
     var deferred  = $q.defer(),
         method = 'GET',
-        url = 'http://' + API_HOST + ':' + API_PORT + '/api/repositories';
+        url = '/api/repositories';
 
     $http({method: method, url: url }).success(function(regression) {
 
