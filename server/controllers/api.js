@@ -16,7 +16,7 @@ var fs = require('fs-extra'),
     targz = require('tar.gz'),
     async = require('async'),
     readDir = require('../utils/readDir'),
-    imageRepo = path.join(__dirname, '..', '..', 'repositories');
+    imageRepo = path.join(__dirname, '..', '..', '..', 'repositories');
 
 exports.syncImages = function(req, res) {
 
