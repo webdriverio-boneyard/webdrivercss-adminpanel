@@ -162,9 +162,8 @@ angular.module('webdrivercssAdminpanelApp').directive('imagediff', function($htt
             $scope.toggleDiff = 0;
 
             $scope.$watchCollection('[diff,project]', function(params) {
-
                 $scope.diffImg = params[0];
-                $scope.diffID = $scope.diffImg.split(/\./)[0];
+                $scope.diffID = $scope.diffImg;
                 $scope.project = params[1];
 
                 element.attr('id', $scope.diffID);
