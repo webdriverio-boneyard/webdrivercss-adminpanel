@@ -27,16 +27,16 @@
 </nav>
 
 <div class="panel panel-default diffs" ng-repeat="diff in diffs">
-    <div class="panel-heading"><h3 class="panel-title">{{ diff.split('.')[1] }}</h3></div>
+    <div class="panel-heading"><h3 class="panel-title">{{ diff.split('.').slice(0,-2).join(' ') }}</h3></div>
     <div class="panel-body">
         <imagediff diff="diff" project="dir" />
     </div>
 </div>
 
 <div class="panel panel-default shots" ng-repeat="shot in shots">
-    <div class="panel-heading"><h3 class="panel-title">{{ shot.split('.')[0] }}</h3></div>
+    <div class="panel-heading"><h3 class="panel-title">{{ shot.split('.').slice(0,-1).join(' ') }}</h3></div>
     <div class="panel-body">
-        <img ng-src="/api/repositories/{{ dir }}/{{ shot }}" alt="{{ shot.split('.')[0] }}">
+        <img ng-src="/api/repositories/{{ dir }}/{{ shot }}" alt="{{ shot }}">
     </div>
 </div>
 
