@@ -103,14 +103,10 @@ exports.getImage = function(req, res) {
              * check if requested file exists
              * return 404 if file doesn't exist otherwise send file content
              */
-            fs.exists(filepath, function(exists) {
-
-                if (!exists) {
+            res.sendfile(filepath, {}, function(err) {
+                if (err) {
                     return res.send(404);
                 }
-
-                res.sendfile(filepath);
-
             });
 
         });
