@@ -16,7 +16,7 @@ var fs = require('fs-extra'),
     targz = require('tar.gz'),
     async = require('async'),
     readDir = require('../utils/readDir'),
-    imageRepo = path.join(__dirname, '..', '..', '..', 'repositories');
+    config = require('../config/config');
 
 exports.syncImages = function(req, res) {
 
@@ -25,7 +25,7 @@ exports.syncImages = function(req, res) {
     }
 
     fs.readFile(req.files.gz.path, function(err, data) {
-        var newPath = path.join(imageRepo, req.files.gz.name);
+        var newPath = path.join(config.imageRepo, req.files.gz.name);
 
         fs.remove(newPath.replace(/\.tar\.gz/, ''), function(err) {
             if (err) {
@@ -37,7 +37,7 @@ exports.syncImages = function(req, res) {
                     throw (err);
                 }
 
-                new targz().extract(newPath, imageRepo);
+                new targz().extract(newPath, config.imageRepo);
                 res.send(200);
             });
 
@@ -48,7 +48,7 @@ exports.syncImages = function(req, res) {
 
 exports.getDirectoryList = function(req, res) {
 
-    readDir(imageRepo, function(err, list) {
+    readDir(config.imageRepo, function(err, list) {
         if (err) {
             throw err;
         }
@@ -66,7 +66,7 @@ exports.getImage = function(req, res) {
     /**
      * read directory to check if hash matches given files
      */
-    fs.readdir(imageRepo, function(err, files) {
+    fs.readdir(config.imageRepo, function(err, files) {
 
         if (err || files.length === 0) {
             return res.send(404);
@@ -94,9 +94,9 @@ exports.getImage = function(req, res) {
              * generate file path
              */
             if (req.params.file) {
-                filepath = path.join(imageRepo, file, req.params.file);
+                filepath = path.join(config.imageRepo, file, req.params.file);
             } else {
-                filepath = path.join(imageRepo, file, 'diff', req.params.diff);
+                filepath = path.join(config.imageRepo, file, 'diff', req.params.diff);
             }
 
             /**
@@ -121,7 +121,7 @@ exports.downloadRepository = function(req, res) {
         project = file.replace(/\.tar\.gz/, ''),
         tmpPath = path.join(__dirname, '..', '..', '.tmp', 'webdrivercss-adminpanel' , project),
         tarPath = tmpPath + '.tar.gz',
-        projectPath = path.join(imageRepo, project);
+        projectPath = path.join(config.imageRepo, project);
 
     /**
      * create tmp directory and create tarball to download on the fly
@@ -196,7 +196,7 @@ exports.acceptDiff = function(req, res) {
          * get uploads dir filestructure
          */
         function(done) {
-            return fs.readdir(imageRepo, done);
+            return fs.readdir(config.imageRepo, done);
         },
         /**
          * iterate through all files
@@ -233,8 +233,8 @@ exports.acceptDiff = function(req, res) {
 
             project = file;
 
-            var source = path.join(imageRepo, project, newFile),
-                dest = path.join(imageRepo, project, currentFile);
+            var source = path.join(config.imageRepo, project, newFile),
+                dest = path.join(config.imageRepo, project, currentFile);
 
             return fs.copy(source, dest, done);
 
@@ -243,13 +243,13 @@ exports.acceptDiff = function(req, res) {
          * remove obsolete new.png file
          */
         function(done) {
-            return fs.remove(path.join(imageRepo, project, newFile), done);
+            return fs.remove(path.join(config.imageRepo, project, newFile), done);
         },
         /**
          * remove diff file
          */
         function(done) {
-            return fs.remove(path.join(imageRepo, project, 'diff', diffFile), done);
+            return fs.remove(path.join(config.imageRepo, project, 'diff', diffFile), done);
         }
     ], function(err) {
 
