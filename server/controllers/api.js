@@ -182,9 +182,18 @@ exports.downloadRepository = function(req, res) {
 
 exports.acceptDiff = function(req, res) {
 
-    var newFile = req.body.file,
-        currentFile = newFile.replace('.new.png', '.baseline.png'),
-        diffFile = newFile.replace('.new.png', '.diff.png'),
+    /*
+    The angular.js code still expects the new file to be suffixed '.new.png',
+    but it's actually '.regression.png in the repository.
+
+    We'll deal with this by assuming the .new.png in the file requested by the
+    client is actually .regression.png
+    */
+
+    var imageName = req.body.file.split(".new.png")[0],
+        newFile = imageName + ".regression.png",
+        currentFile = imageName + ".baseline.png",
+        diffFile = imageName + ".diff.png",
         project = null,
         processed = 0;
 
