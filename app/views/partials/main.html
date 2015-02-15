@@ -63,7 +63,7 @@
     <div hljs language="javascript" include="'compile-me'" compile="true" style="margin: 30px 0;"></div>
 
 <script type="text/ng-template" id="compile-me">
-var WebdriverIO = require('webdriverjs'),
+var WebdriverIO = require('webdriverio'),
     WebdriverCSS = require('webdrivercss');
 
 var client = WebdriverIO.remote({
@@ -81,7 +81,10 @@ client
     .init()
     .sync()
     .url('{{ projecturl || "http://example.com" }}')
-    .webdrivercss('exampleTest')
+    .webdrivercss('exampleTest', {
+        name: 'homepage',
+      }
+    )
     .sync()
     .end();
 </script>
