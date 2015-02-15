@@ -94,7 +94,7 @@ repository to the WebdriverCSS - Adminpanel application. Here is an example how 
 image repositories created with WebdriverCSS:
 
 ```js
-var WebdriverIO = require('webdriverjs'),
+var WebdriverIO = require('webdriverio'),
     WebdriverCSS = require('webdrivercss');
 
 // init webdriverio
@@ -116,6 +116,7 @@ client
 
     .url('http://example.com')
     .webdrivercss('exampleTest', {
+        name: 'homepage',
         elem: '#section'
     })
 
