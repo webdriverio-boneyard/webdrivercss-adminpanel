@@ -35,56 +35,67 @@ describe how to do that very well.
 
 ## Usage
 
-Per default the applications provides the following API interfaces:
+By default, the application provides the following API interfaces:
 
-* **GET**   /api/repositories (`"Content-Type": "application/json"`)<br>
-  returns a list of all current stored image repositories<br>
+### GET requests
 
-  **Example Request** *http://localhost:9000/api/repositories*
+* GET `/api/repositories` (`"Content-Type": "application/json"`)<br>
+  Returns a list of all current stored image repositories.<br>
+
+  **Example Request:**<br>
+  `http://localhost:9000/api/repositories`
 
   ```json
   {
     "gz": ["amoeba-example.tar.gz"],
     "repositories": {
-        "amoeba-example": {
-            "images": ["contact.baseline.png","team.baseline.png","team.regression.png"],
-            "diffs": ["team.diff.png"]
-        }
+      "amoeba-example": {
+          "images": ["contact.baseline.png","team.baseline.png","team.regression.png"],
+          "diffs": ["team.diff.png"]
+      }
     }
   }
   ```
 
-* **GET**   /api/repositories/:file (`"Content-Type": "application/octed-stream"`)<br>
-  returns the image repository tarball
+* GET `/api/repositories/:file` (`"Content-Type": "application/octet-stream"`)<br>
+  Returns the image repository tarball.
 
-  **Example Request** *http://localhost:9000/api/repositories/amoeba-example.tar.gz*
+  **Example Request:**<br>
+  `http://localhost:9000/api/repositories/amoeba-example.tar.gz`
 
-* **GET**   /api/repositories/:project/:file (`"Content-Type": "image/png"`)<br>
-  get a current or new image from specific repository
+* GET `/api/repositories/:project/:file` (`"Content-Type": "image/png"`)<br>
+  Get a current or new image from a specific repository.
 
-  **Example Request** *http://localhost:9000/api/repositories/amoeba-example/contact.baseline.png*
+  **Example Request:**<br>
+  `http://localhost:9000/api/repositories/amoeba-example/contact.baseline.png`
 
-* **GET**   /api/repositories/:project/diff/:diff (`"Content-Type": "image/png"`)<br>
-  get diff image of specific repository
+* GET `/api/repositories/:project/diff/:diff` (`"Content-Type": "image/png"`)<br>
+  Get diff image of a specific repository.
 
-  **Example Request** *http://localhost:9000/api/repositories/amoeba-example/diff/team.diff.png*
+  **Example Request:**<br>
+  `http://localhost:9000/api/repositories/amoeba-example/diff/team.diff.png`
 
-* **POST**  /api/repositories/confirm (`"Accept": "application/json"`)<br>
-  confirm image diff if changes were made on purpose
+### POST requests
 
-  **Example Request** *http://localhost:9000/api/repositories/confirm
+* POST `/api/repositories/confirm` (`"Accept": "application/json"`)<br>
+  Confirm image diff if changes were made on purpose.
 
-  **JSON Parameters**<br>
-    `file`    - `{String}`  filename of new file
-    `project` - `{String}`  project name
+  **Example Request:**<br>
+  `http://localhost:9000/api/repositories/confirm`
 
-* **POST**  /api/repositories/* (`"Accept": "application/octed-stream"`)<br>
-  takes an image repository tarball (tar.gz), unzips it and saves it to the file system
+  **JSON Parameters:**<br>
+    `file`    - `{String}`  *filename of new file*<br>
+    `project` - `{String}`  *project name*
 
-  **Example Request** *http://localhost:9000/api/repositories/amoeba-example.tar.gz*
+* POST `/api/repositories/*` (`"Accept": "application/octed-stream"`)<br>
+  Takes an image repository tarball (`tar.gz`),
+  unzips it, and saves it to the file system.
 
-  **JSON Parameters**<br>
-    `gz` - `{Object}`  repository tarbal
+  **Example Request:**<br>
+  `http://localhost:9000/api/repositories/amoeba-example.tar.gz`
+
+  **JSON Parameters:**<br>
+    `gz` - `{Object}`  *repository tarbal*
 
 ## Setup WebdriverCSS
 
