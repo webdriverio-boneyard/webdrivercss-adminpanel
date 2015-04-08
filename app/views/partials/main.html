@@ -34,7 +34,9 @@
 </div>
 
 <div class="panel panel-default shots" ng-repeat="shot in shots">
-    <div class="panel-heading"><h3 class="panel-title">{{ shot.split('.').slice(0,-1).join(' ') }}</h3></div>
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ shot.split('.').slice(0,-1).join(' ') }}</h3>
+    </div>
     <div class="panel-body">
         <img ng-src="/api/repositories/{{ dir }}/{{ shot }}" alt="{{ shot }}">
     </div>
@@ -44,14 +46,16 @@
     <h2>Howdy,</h2>
 
     <p>
-        and congratulation! You've successfully set up the WebdriverCSS Adminpanel. Now you can start with
-        your CSS regression tests. This Application will help you to get an overview of all made screenshots
-        of your project.
+        …and congratulations!
+        You've successfully set up the WebdriverCSS Adminpanel.
+        Now you can start with your CSS regression tests.
+        This application will help you to get an overview
+        of all made screenshots of your project.
     </p>
 
     <p>
-        To get started just the type your project name into the input field and copy the source code below
-        into a test file and execute it.
+        To get started just type your project name into the input field and copy
+        the source code below into a test file and execute it.
     </p>
 
     <label for="projectname" style="margin-top: 20px;">Your Project Name</label>
