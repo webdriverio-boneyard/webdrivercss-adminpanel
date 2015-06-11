@@ -7,19 +7,36 @@ This application helps you to manage all your image repositories of your CSS reg
 It provides an API to synchronise and configure them. This allows you to exchange the repositories with your peers and
 colleagues to be able to run regression tests decentralized.
 
+## Dependencies
+
+- **NodeJS and npm**
+  For installing packages.
+  Download and run the [NodeJS installer](https://nodejs.org/download/).
+- **Bower**
+  For installing client-side dependencies.
+  Run `npm install -g bower`.
+- **Ruby, Sass, and Compass**
+  Needed for Compass extension to SASS, which provides CSS niceties.
+  Install [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
+  and run `gem install compass`.
+
+> Note: Grunt will be installed locally with npm.
+  If you'd like to install Grunt globally, run `npm install -g grunt-cli`.
+
+
 ## Install
 
-First download this repository:
+First download this repository and change to the project directory:
 
 ```sh
 $ git clone git@github.com:webdriverio/webdrivercss-adminpanel.git
+$ cd webdrivercss-adminpanel
 ```
 
-Then download all Node.js and Bower dependencies:
+Then download all client and server-side dependencies:
 
 ```sh
 $ npm install
-$ npm install -g grunt-cli
 $ bower install
 ```
 
