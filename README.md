@@ -12,16 +12,13 @@ colleagues to be able to run regression tests decentralized.
 - **NodeJS and npm**
   For installing packages.
   Download and run the [NodeJS installer](https://nodejs.org/download/).
-- **Bower**
-  For installing client-side dependencies.
-  Run `npm install -g bower`.
 - **Ruby, Sass, and Compass**
   Needed for Compass extension to SASS, which provides CSS niceties.
   Install [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
   and run `gem install compass`.
 
-> Note: Grunt will be installed locally with npm.
-  If you'd like to install Grunt globally, run `npm install -g grunt-cli`.
+> Note: Grunt & Bower will be installed locally with npm.
+  If you'd like to install Grunt or Bower globally, run `npm install -g grunt-cli` or `npm install -g bower`, respectively.
 
 
 ## Install
@@ -37,7 +34,6 @@ Then download all client and server-side dependencies:
 
 ```sh
 $ npm install
-$ bower install
 ```
 
 Last but not least start the application by running:
