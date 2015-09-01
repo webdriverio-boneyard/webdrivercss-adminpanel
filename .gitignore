@@ -7,3 +7,5 @@ heroku
 /views
 dist
 repositories
+
+npm-debug.log
