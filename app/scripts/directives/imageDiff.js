@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('webdrivercssAdminpanelApp').directive('imagediff', function($http, API_HOST, API_PORT) {
+angular.module('webdrivercssAdminpanelApp').directive('imagediff', function($http) {
 
     var ImageDiff = function(id, width, height) {
 
@@ -182,7 +182,7 @@ angular.module('webdrivercssAdminpanelApp').directive('imagediff', function($htt
 
                 $http({
                     method: 'POST',
-                    url: 'http://' + API_HOST + ':' + API_PORT + '/api/repositories/confirm',
+                    url: '/api/repositories/confirm',
                     data: {
                         project: $scope.project,
                         file: $scope.diff.replace(/diff/,'new')
