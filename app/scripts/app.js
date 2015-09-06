@@ -6,8 +6,6 @@ angular.module('webdrivercssAdminpanelApp', [
     'ngRoute',
     'hljs'
 ])
-.constant('API_HOST','localhost')
-.constant('API_PORT',9000)
 .config(function($routeProvider, $locationProvider, hljsServiceProvider) {
 
     $routeProvider.when('/', {
