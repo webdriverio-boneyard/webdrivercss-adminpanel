@@ -1,6 +1,14 @@
 'use strict';
 
 angular.module('webdrivercssAdminpanelApp').controller('MainCtrl', function ($scope, repositories, $routeParams) {
+    function repositoriesEndpoint() {
+      var protocol = document.location.protocol;
+      var hostname = document.location.hostname;
+      var port = document.location.port;
+      var url = port ? hostname + ':' + port : hostname;
+
+      return protocol + '//' + url + '/api/repositories/';
+    }
 
     $scope.repositories = repositories;
     $scope.project = $routeParams.id;
@@ -8,7 +16,7 @@ angular.module('webdrivercssAdminpanelApp').controller('MainCtrl', function ($sc
 
     $scope.diffs = [];
     $scope.shots = [];
-    $scope.api = document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/api/repositories/';
+    $scope.api = repositoriesEndpoint();
 
     if($routeParams.id && Object.keys(repositories).length) {
         $scope.dir   = $routeParams.id;

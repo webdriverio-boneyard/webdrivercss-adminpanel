@@ -1,0 +1,10 @@
+# Ignore .git folder as the git history is irrelevant in the
+# docker image. This also speeds up the build process
+.git
+
+node_modules
+app/bower_components
+dist
+repositories
+.sass-cache
+npm-debug.log
