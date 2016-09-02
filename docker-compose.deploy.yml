@@ -1,0 +1,12 @@
+version: "2"
+services:
+  app:
+    build: .
+    ports:
+      - 80:9000
+    volumes:
+      - repositories:/usr/src/app/repositories
+
+volumes:
+  repositories:
+    driver: local

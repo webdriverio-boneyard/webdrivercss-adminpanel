@@ -1,0 +1,19 @@
+# These are configurations for development
+version: "2"
+services:
+  app:
+    build: .
+    # Mount the local code for development
+    volumes:
+      - .:/usr/src/app
+    # Share the network interface with the host
+    #
+    # This facilitates development in two ways:
+    #
+    # - In a machine that natively supports docker, this means you can continue
+    # to visit 'localhost'.
+    #
+    # - Whenever you run a 'one-off' task such as `docker-compose run --rm app grunt serve:debug`
+    #  that requires a port, you won't have to use the '--service-ports' flag which isn't easy to
+    #  always remember.
+    network_mode: host

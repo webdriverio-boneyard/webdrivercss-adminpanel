@@ -15,7 +15,7 @@ colleagues to be able to run regression tests decentralized.
 - **Ruby, Sass, and Compass**
   Needed for Compass extension to SASS, which provides CSS niceties.
   Install [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
-  and run `gem install compass`.
+  and run `gem install bundler && bundle install`.
 
 > Note: Grunt & Bower will be installed locally with npm.
   If you'd like to install Grunt or Bower globally, run `npm install -g grunt-cli` or `npm install -g bower`, respectively.
@@ -43,8 +43,32 @@ $ grunt serve:dist
 ```
 
 This command minifies all stylesheets and scripts and starts the application on [localhost:9000](http://localhost:9000).
-I'm not going to describe how to deploy a Node.js application to a server. There are plenty of tutorials out there who
+I'm not going to describe how to deploy a Node.js application to a server. There are plenty of tutorials out there that
 describe how to do that very well.
+
+## Running in docker
+
+To start server with deployment configurations, run:
+
+```sh
+docker-compose -f docker-compose.deploy.yml up -d
+```
+
+## Development with docker
+
+If you are working on a non-linux machine using `docker-machine`, make sure to rebuild any native packages.
+
+```sh
+docker-comopose run --rm app npm rebuild
+```
+
+Then, you can run:
+
+```sh
+docker-compose up
+# or other tasks such as
+docker-compose run --rm app grunt serve:debug
+```
 
 ## Usage
 
