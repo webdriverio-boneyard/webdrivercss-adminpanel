@@ -11,6 +11,7 @@ module.exports = function(app) {
     // Server API Routes
     app.route('/api/repositories').get(api.getDirectoryList);
     app.route('/api/repositories/:file').get(api.downloadRepository);
+    app.route('/api/repositories/:file').delete(api.deleteRepository);
     app.route('/api/repositories/:project/:file').get(api.getImage);
     app.route('/api/repositories/:project/diff/:diff').get(api.getImage);
     app.route('/api/repositories/confirm').post(api.acceptDiff);
