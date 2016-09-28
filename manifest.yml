@@ -1,8 +1,0 @@
----
-applications:
-- name: visualtesting-production
-  buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.7
-  memory: 200M
-  path: ./dist
-  env:
-    NODE_ENV: production
