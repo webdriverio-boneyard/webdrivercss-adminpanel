@@ -1,0 +1,5 @@
+node_modules/
+app/bower_components/
+
+# Don't copy into the _build_ docker image. It geneates it for us.
+dist/

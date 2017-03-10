@@ -1,0 +1,38 @@
+FROM node:boron-alpine
+
+#
+# NOTE: This expects to be run from the dist/ folder
+#
+# For instructions on how to generate see the top of Dockerfile.build
+
+RUN install -d -o node /usr/src/app
+
+RUN apk add -U su-exec \
+ && rm -r /var/cache/apk/*
+
+USER node
+WORKDIR /usr/src/app
+
+ENV PORT=9000 \
+    NODE_ENV=production
+
+COPY package.json .
+
+# `npm cache clean` doesn't work here: https://github.com/npm/npm/issues/11520
+RUN npm install \
+ && rm -rf $HOME/.npm
+
+COPY ./ /usr/src/app
+
+VOLUME /usr/src/repositories
+
+# Make sure the volume is writeable by the `node` user, then run our node
+# server as the node user. We use `su-exec` because it gets out of the way
+# where as su/sudo stay resident.
+USER root
+CMD [ \
+  "sh", \
+  "-c", \
+  "chown node: /usr/src/repositories && exec su-exec node node server.js" \
+]
+

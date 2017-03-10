@@ -1,0 +1,38 @@
+# -*- Dockerfile -*-
+FROM node:boron
+
+# This Dockerfile will install everything needed to run the grunt build/dist
+# steps (i.e. css minification, compass etc.).
+#
+# Expected way this will be used:
+#
+# rm -r ./dist/ && \
+#   docker build -f Dockerfile.build -t webdrivercss-admin-build . && \
+#   cid=$(docker create  webdrivercss-admin-build) && \
+#   docker cp $cid:/usr/src/app/dist ./dist && \
+#   docker rm $cid && \
+#   docker build -t webdrivercss-admin dist/
+
+RUN install -d -o node /usr/src/app
+
+RUN apt-get update \
+ && apt-get install -y ruby-compass
+
+USER node
+WORKDIR /usr/src/app
+
+COPY package.json bower.json .bowerrc /usr/src/app/
+RUN npm install \
+ && npm cache clean
+
+COPY bower.json .bowerrc /usr/src/app/
+RUN mkdir -p app/bower_components \
+ && ./node_modules/.bin/bower install
+
+COPY . /usr/src/app
+
+# Ensure the dist folder contains _just_ what we generate here, nothing else.
+RUN rm -rf dist \
+ && ./node_modules/.bin/grunt build --stack
+
+CMD ["/bin/sh", "-c", "echo >&2 'This container is not designed to be run -- It is build time only.'; exit 1"]

@@ -356,6 +356,10 @@ module.exports = function(grunt) {
                         'server/**/*',
                         'repositories/**'
                     ]
+                }, {
+                    timestamp: true,
+                    dest: '<%= yeoman.dist %>/Dockerfile',
+                    src: 'Dockerfile.dist'
                 }]
             },
             styles: {
