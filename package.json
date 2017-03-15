@@ -17,6 +17,7 @@
     "method-override": "~1.0.0",
     "mongoose": "~3.8.8",
     "morgan": "~1.0.0",
+    "rimraf": "^2.5.2",
     "static-favicon": "~1.0.1",
     "tar.gz": "^0.1.1"
   },
@@ -58,8 +59,6 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "postinstall": "bower install",
-    "test": "grunt test",
-    "start": "grunt serve:dist"
+    "test": "grunt test"
   }
 }

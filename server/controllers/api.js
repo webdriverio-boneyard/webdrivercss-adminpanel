@@ -16,6 +16,7 @@ var fs = require('fs-extra'),
     targz = require('tar.gz'),
     async = require('async'),
     readDir = require('../utils/readDir'),
+    rimraf = require('rimraf'),
     imageRepo = path.join(__dirname, '..', '..', '..', 'repositories');
 
 exports.syncImages = function(req, res) {
@@ -119,7 +120,7 @@ exports.downloadRepository = function(req, res) {
 
     var file = req.params.file,
         project = file.replace(/\.tar\.gz/, ''),
-        tmpPath = path.join(__dirname, '..', '..', '.tmp', 'webdrivercss-adminpanel' , project),
+        tmpPath = path.join(__dirname, '..', '..', '.tmp', 'webdrivercss-adminpanel', project),
         tarPath = tmpPath + '.tar.gz',
         projectPath = path.join(imageRepo, project);
 
@@ -130,13 +131,13 @@ exports.downloadRepository = function(req, res) {
         /**
          * check if project exists
          */
-        function(done) {
+            function(done) {
             return fs.exists(projectPath, done.bind(this, null));
         },
         /**
          * make tmp dir
          */
-        function(isExisting, done) {
+            function(isExisting, done) {
             if (!isExisting) {
                 return res.send(404);
             }
@@ -146,7 +147,7 @@ exports.downloadRepository = function(req, res) {
         /**
          * copy these files
          */
-        function(files, done) {
+            function(files, done) {
             return async.map(files, function(file, cb) {
                 return fs.copy(file, file.replace(projectPath, tmpPath), cb);
             }, done);
@@ -154,13 +155,13 @@ exports.downloadRepository = function(req, res) {
         /**
          * create diff directory (webdrivercss breaks otherwise)
          */
-        function(res, done) {
+            function(res, done) {
             return fs.ensureDir(tmpPath + '/diff', done);
         },
         /**
          * zip cleared
          */
-        function(res, done) {
+            function(res, done) {
             return new targz().compress(tmpPath, tarPath, done);
         }
     ], function(err) {
@@ -183,12 +184,12 @@ exports.downloadRepository = function(req, res) {
 exports.acceptDiff = function(req, res) {
 
     /*
-    The angular.js code still expects the new file to be suffixed '.new.png',
-    but it's actually '.regression.png in the repository.
+     The angular.js code still expects the new file to be suffixed '.new.png',
+     but it's actually '.regression.png in the repository.
 
-    We'll deal with this by assuming the .new.png in the file requested by the
-    client is actually .regression.png
-    */
+     We'll deal with this by assuming the .new.png in the file requested by the
+     client is actually .regression.png
+     */
 
     var imageName = req.body.file.split(".new.png")[0],
         newFile = imageName + ".regression.png",
@@ -204,13 +205,13 @@ exports.acceptDiff = function(req, res) {
         /**
          * get uploads dir filestructure
          */
-        function(done) {
+            function(done) {
             return fs.readdir(imageRepo, done);
         },
         /**
          * iterate through all files
          */
-        function(files, done) {
+            function(files, done) {
 
             if (files.length === 0) {
                 return done(404);
@@ -223,7 +224,7 @@ exports.acceptDiff = function(req, res) {
         /**
          * check if directory matches with given hash and overwrite new file with current file
          */
-        function(files, file, done) {
+            function(files, file, done) {
 
             /**
              * continue if hash doesnt match url param
@@ -251,13 +252,13 @@ exports.acceptDiff = function(req, res) {
         /**
          * remove obsolete new.png file
          */
-        function(done) {
+            function(done) {
             return fs.remove(path.join(imageRepo, project, newFile), done);
         },
         /**
          * remove diff file
          */
-        function(done) {
+            function(done) {
             return fs.remove(path.join(imageRepo, project, 'diff', diffFile), done);
         }
     ], function(err) {
@@ -270,4 +271,27 @@ exports.acceptDiff = function(req, res) {
 
     });
 
+};
+
+exports.deleteRepository = function(req, res) {
+    if (req.params.file) {
+        var rootPath = '../repositories/';
+
+        var err = rimraf.sync(path.join(rootPath, req.params.file), {disableGlob: false});
+
+        if (err) {
+            return res.send(err);
+        }
+
+        err = rimraf.sync(path.join(rootPath, req.params.file) + '.tar.gz', {disableGlob: false});
+
+        if (err) {
+            return res.send(err);
+        }
+
+        res.send(200);
+
+    } else {
+        return res.send(new Error('No repository specified'));
+    }
 };
