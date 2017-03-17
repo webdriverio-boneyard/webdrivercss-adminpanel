@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicas }}
+  # We dont need a large deployment history limit as Helm keeps it's own
+  # history
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: server
+        image: {{ template "docker-image" . }}
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 9000
+            name: http
+        env:
+          - name: NODE_ENV
+            value: production
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
