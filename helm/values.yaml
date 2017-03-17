@@ -11,3 +11,7 @@ resources:
   requests:
     memory: 64Mi
     cpu: 10m
+persistentVolume:
+  enabled: true
+  accessModes: [ReadWriteOnce]
+  size: 8Gi
