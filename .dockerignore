@@ -3,3 +3,8 @@ app/bower_components/
 
 # Don't copy into the _build_ docker image. It geneates it for us.
 dist/
+
+# We don't need to copy anything about the Pipelines or helm into the containers
+helm/
+ci/env.yaml
+ci/pipelines/
