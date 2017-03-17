@@ -15,6 +15,7 @@
                     </ul>
                 </li>
             </ul>
+            <button ng-click="deleteRepository()">Delete</button>
         </div>
     </div>
 
@@ -42,61 +43,6 @@
     </div>
 </div>
 
-<div class="introduction" ng-show="shots.length === 0 && diffs.length === 0">
-    <h2>Howdy,</h2>
-
-    <p>
-        …and congratulations!
-        You've successfully set up the WebdriverCSS Adminpanel.
-        Now you can start with your CSS regression tests.
-        This application will help you to get an overview
-        of all made screenshots of your project.
-    </p>
-
-    <p>
-        To get started just type your project name into the input field and copy
-        the source code below into a test file and execute it.
-    </p>
-
-    <label for="projectname" style="margin-top: 20px;">Your Project Name</label>
-    <input type="text" id="projectname" class="form-control" ng-model="projectname" placeholder="myProject">
-
-    <label for="projecturl" style="margin-top: 10px;">Your Project URL</label>
-    <input type="text" id="projecturl" class="form-control" ng-model="projecturl" placeholder="http://example.com">
-
-    <div hljs language="javascript" include="'compile-me'" compile="true" style="margin: 30px 0;"></div>
-
-<script type="text/ng-template" id="compile-me">
-var WebdriverIO = require('webdriverio'),
-    WebdriverCSS = require('webdrivercss');
-
-var client = WebdriverIO.remote({
-    desiredCapabilities: {
-        browserName: 'firefox'
-    }
-});
-
-WebdriverCSS.init(client, {
-    screenshotRoot: '{{ projectname || "myProject" }}',
-    api: '{{ api }}'
-});
-
-client
-    .init()
-    .sync()
-    .url('{{ projecturl || "http://example.com" }}')
-    .webdrivercss('exampleTest', {
-        name: 'homepage',
-      }
-    )
-    .sync()
-    .end();
-</script>
-
-    <p>
-        For more information on how to install and use <a href="https://github.com/webdriverio/webdrivercss">WebdriverCSS</a>
-        and <a href="http://webdriver.io">WebdriverIO</a> please checkout their project website or GitHub repositories.
-    </p>
-</div>
+<iframe src="http://digitalinnovation.github.io/mns-core-test/visualtesting/" style="width: 100%; height: calc(100vh - 200px);"></iframe>
 
 <hr>

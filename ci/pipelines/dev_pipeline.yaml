@@ -1,0 +1,141 @@
+resource_types:
+
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
+
+- name: helm
+  type: docker-image
+  source:
+    repository: linkyard/concourse-helm-resource
+
+resources:
+
+- name: repo
+  type: git
+  source:
+    uri: {{gituri}}
+    branch: {{branch}}
+
+- name: build-deps-docker-image
+  type: docker-image
+  source:
+    repository: registry.pulp.devops.mnscorp.net/front-end/webdrivercss_adminpanel_build
+    username: {{registry_username}}
+    password: {{registry_password}}
+
+- name: docker-image
+  type: docker-image
+  source:
+    repository: registry.pulp.devops.mnscorp.net/front-end/webdrivercss_adminpanel
+    username: {{registry_username}}
+    password: {{registry_password}}
+
+- name: slack-alert
+  type: slack-notification
+  source:
+    url: {{slackhook}}
+
+
+- name: helm-k8sdev
+  type: helm
+  source:
+    release: webdrivercss-adminpanel
+    # This is a public key so can live in here.
+    cluster_ca: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tDQpNSUlETURDQ0FoaWdBd0lCQWdJSUdoVlB4OEtIQks4d0RRWUpLb1pJaHZjTkFRRUxCUUF3RXpFUk1BOEdBMVVFQXd3SVlXTnphemh6DQpZMkV3SGhjTk1UY3dNakkwTURBd01EQXdXaGNOTVRrd01qSTBNREF3TURBd1dqQVRNUkV3RHdZRFZRUUREQWhoWTNOck9ITmpZVENDDQpBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUpZbkNLVDQ4WEtMTG54YWp1VHFvaFZ0UU91ODZQNXQ3eGR5DQo2U3JmR1BvY2NlSXVNMW1MOUtNOG9JSzFISkx5SmtkT3NqYUljcjFQb1FPTE9uZksrZ21rODI3ZXFTZy9NdU1LSHMxUi9abHBPajU4DQpZMXI3VXYvY0RPUFhDcWV5cmlkeEk0UFlqSHViNHFIdUhaekdYejNpNUtOSGxuWmNKajZhcko1RDlmN2RnUE1QbGpWdkY1aDdSVjJCDQpsd1hvWi9qVkNieHF0ZmZwd1o3Q0dmYk1CdEVWdm9ZWGtzdjhnT0htckJ6UGhxcDhTUlFvMVNTZWpPNWQyMXR4aHVESFovdGlXVGNEDQpGVXhhaHdQVGRtRzFhcmpvS2FmVWNHeGhNKzVkNk9QTFZ5a2Q4YnFsSG1vTE1MMFp3Y1pnNXk0SnJHUTlmVVNOSno2WmtJREk5QkwzDQp4d0VDQXdFQUFhT0JoekNCaERCQ0JnTlZIU01FT3pBNWdCUTBJQXBZUTVvUzFYRGthdmVlNUJNd2FIdERGS0VYcEJVd0V6RVJNQThHDQpBMVVFQXd3SVlXTnphemh6WTJHQ0NCb1ZUOGZDaHdTdk1CMEdBMVVkRGdRV0JCUTBJQXBZUTVvUzFYRGthdmVlNUJNd2FIdERGREFQDQpCZ05WSFJNQkFmOEVCVEFEQVFIL01BNEdBMVVkRHdFQi93UUVBd0lDcERBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQVk4aHowYk5UDQpUYUZjL2ppNlhzaVZuNG5JbmVZUnIzOFhPZTJwdUM1czNLNDV0ajRWUFliVVFLVTRWSmMwekowTE12QkxJbVQySVFCZkZNUVp0TGdRDQpnS1JUVWZrb29sV2NRV3lCMnRqN3hkUUNaL3Nta245ZTRsTXhCdURKdXQyYU9PZldyZHVVVjF2WC9oQWlwbmFkV2hOVjhaMGhjdzkrDQpnTEp0VWg5aVVnOHNOU2FzcTNKZ0hqN29Zd05md0VuQ3NjTEZxTFBZNTgxZ01tUi9kbEIvTXpRQS9DODFhNTFtYUE2TlZYbEZWYmNTDQpybkxvVG9tWnhmdlZyZzBGVmRJMTY0WlBOMks4S2JFMmhPVnRodHhrUm9YY0FBTy95bEVNbCtWYSswSVI1a1hrcWxwN3hjSGc4OHd1DQpXc1BRc0F5MU5tK3BSMmNVZzFTTHhWWUErVzdSUmc9PQ0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ0K
+
+    cluster_url: https://k8s-dev-master.northeurope.cloudapp.azure.com
+    token: {{k8s-dev-token}}
+    namespace: pegasus
+
+jobs:
+- name: Build and push build-pipeline container
+  max_in_flight: 1
+  build_logs_to_retain: 10
+
+  plan:
+  - get: repo
+  - put: build-deps-docker-image
+    params:
+      build: repo
+      dockerfile: repo/Dockerfile.build
+      cache: true
+    get_params:
+      skip_download: true
+
+    on_failure:
+      put: slack-alert
+      params:
+        channel: {{slackchannel}}
+        text: Oops, $BUILD_JOB_NAME step of $BUILD_PIPELINE_NAME failed <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|Click here> for details!
+        username: boilerteam-ci
+        icon_emoji: ":facepalm"
+
+- name: Build and push runtime container
+  max_in_flight: 1
+  build_logs_to_retain: 10
+  plan:
+  - get: build-deps-docker-image
+    passed: [Build and push build-pipeline container]
+  # Take the "dist" folder that we built in that previous image, and build that docker image from it based on Alpine.
+  - put: docker-image
+    params:
+      build: build-deps-docker-image/rootfs/usr/src/app/dist
+      cache: true
+    get_params:
+      # We don't need info about the image we built other than it's SHA.
+      skip_download: true
+
+    on_failure:
+      put: slack-alert
+      params:
+        channel: {{slackchannel}}
+        text: Oops, $BUILD_JOB_NAME step of $BUILD_PIPELINE_NAME failed <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|Click here> for details!
+        username: boilerteam-ci
+        icon_emoji: ":facepalm"
+
+- name: Deploy via Helm
+  plan:
+  - get: repo
+    passed: [Build and push build-pipeline container]
+    trigger: true
+  - get: docker-image
+    params:
+      skip_download: true
+    passed: [Build and push runtime container]
+    trigger: true
+  - task: genreate-helm-vars
+    params:
+      INGRESS_DOMAIN: devk8s.mnsdigital.io
+    config:
+      platform: linux
+      inputs:
+        - name: docker-image
+      outputs:
+        - name: helm-values
+      image_resource:
+        type: docker-image
+        source:
+          repository: concourse/git-resource
+      run:
+        path: /bin/sh
+        args:
+          - -c
+          - |
+            set -eux -o pipefail
+            jq -n --arg digest "$(cat docker-image/digest)" \
+              '{dockerSha:$digest, ingress:{domain: env.INGRESS_DOMAIN}}' \
+            | tee helm-values/values.yaml
+  - put: helm-k8sdev
+    params:
+      chart: repo/helm
+      values: helm-values/values.yaml
+    on_failure:
+      put: slack-alert
+      params:
+        channel: {{slackchannel}}
+        text: Oops, $BUILD_JOB_NAME step of $BUILD_PIPELINE_NAME failed <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|Click here> for details!
+        username: boilerteam-ci
+        icon_emoji: ":facepalm"

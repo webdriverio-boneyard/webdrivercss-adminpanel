@@ -1,0 +1,17 @@
+dockerImage: registry.pulp.devops.mnscorp.net/front-end/webdrivercss_adminpanel
+replicas: 1
+ingress:
+  name: visualtesting
+  # This will need to be set at deploy time as it differs from environment to environment
+  #domain: "devk8s.mnsdigital.io"
+  ssl: false
+# Change below value if you want to deploy the application in a different namespace
+namespace: pegasus
+resources:
+  requests:
+    memory: 64Mi
+    cpu: 10m
+persistentVolume:
+  enabled: true
+  accessModes: [ReadWriteOnce]
+  size: 8Gi

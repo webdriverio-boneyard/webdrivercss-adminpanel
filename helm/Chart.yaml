@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Admin Panel for Visual Testing tool
+name: webdrivercss-adminpanel
+version: 1.0.4

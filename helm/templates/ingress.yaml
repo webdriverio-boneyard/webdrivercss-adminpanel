@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+  {{- if .Values.ingress.ssl }}
+    kubernetes.io/tls-acme: "true"
+  {{- end }}
+  {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.ssl }}
+  tls:
+    - hosts:
+      - {{ .Values.ingress.name }}.{{ .Values.ingress.domain }}
+      secretName: {{ template "name" . }}-tls
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.name }}.{{ .Values.ingress.domain }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "fullname" . }}
+              servicePort: http

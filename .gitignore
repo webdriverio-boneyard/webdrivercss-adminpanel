@@ -8,4 +8,6 @@ heroku
 dist
 repositories
 
+ci/env.yaml
+
 npm-debug.log
